@@ -1,0 +1,42 @@
+services:
+  n8n:
+    image: docker.n8n.io/n8nio/n8n
+    container_name: n8n
+    restart: always
+    ports:
+      - "5678:5678"
+    environment:
+      - GENERIC_TIMEZONE=Asia/Jakarta
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+      - N8N_COMMUNITY_PACKAGES_ENABLED=true
+      - N8N_COMMUNITY_PACKAGE_ALLOW_TOOL_USAGE=true
+      - N8N_EDITOR_BASE_URL=${WEBHOOK_URL}
+      - WEBHOOK_URL=${WEBHOOK_URL}
+      - N8N_DEFAULT_BINARY_DATA_MODE=filesystem
+    volumes:
+      - n8n_data:/home/node/.n8n
+
+  waha:
+    image: devlikeapro/waha
+    container_name: waha
+    restart: always
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./sessions:/app/.sessions
+      - ./media:/app/.media
+    environment:
+      - WAHA_API_KEY=${WAHA_API_KEY}
+      - WAHA_DASHBOARD_USERNAME=${WAHA_DASHBOARD_USERNAME}
+      - WAHA_DASHBOARD_PASSWORD=${WAHA_DASHBOARD_PASSWORD}
+      - WHATSAPP_SWAGGER_USERNAME=${WHATSAPP_SWAGGER_USERNAME}
+      - WHATSAPP_SWAGGER_PASSWORD=${WHATSAPP_SWAGGER_PASSWORD}
+      - WAHA_DASHBOARD_ENABLED=${WAHA_DASHBOARD_ENABLED}
+      - WHATSAPP_SWAGGER_ENABLED=${WHATSAPP_SWAGGER_ENABLED}
+      - WHATSAPP_DEFAULT_ENGINE=${WHATSAPP_DEFAULT_ENGINE}
+      - WAHA_NAMESPACE=${WAHA_NAMESPACE}
+volumes:
+  n8n_data:
